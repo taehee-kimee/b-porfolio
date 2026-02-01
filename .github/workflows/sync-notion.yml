@@ -1,0 +1,59 @@
+name: Sync from Notion
+
+on:
+  # Manual trigger from GitHub Actions UI
+  workflow_dispatch:
+  
+  # Scheduled sync every 6 hours (optional - adjust or remove as needed)
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Sync from Notion
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: npm run sync:notion
+      
+      - name: Check for changes
+        id: changes
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit and push changes
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "chore: sync content from Notion [skip ci]"
+          git push
+      
+      - name: Trigger Vercel Deployment
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          echo "✅ Changes pushed. Vercel will auto-deploy from the push."
+          echo "If you have a deploy hook, you can also trigger it here:"
+          # curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"

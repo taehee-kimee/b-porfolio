@@ -3,7 +3,7 @@
   "type": "module",
   "version": "2.5.1",
   "description": "A modern, customizable blog template built with Astro - fast, responsive, and multilingual",
-  "author": "Sereja <demo@morethan-log.com>",
+  "author": "Taehee",
   "license": "MIT",
   "keywords": [
     "astro",
@@ -15,7 +15,8 @@
     "multilingual",
     "responsive",
     "seo",
-    "dark-mode"
+    "dark-mode",
+    "notion"
   ],
   "repository": {
     "type": "git",
@@ -28,7 +29,9 @@
   "scripts": {
     "dev": "run-p client:watch astro:dev",
     "start": "npm run dev",
-    "build": "run-s client:build astro:build",
+    "sync:notion": "npx tsx scripts/sync-notion.ts",
+    "build": "run-s sync:notion client:build astro:build",
+    "build:local": "run-s client:build astro:build",
     "postbuild": "run-s copy:404 format:dist",
     "copy:404": "node scripts/copy-404.mjs",
     "format:dist": "run-s format:dist:html format:dist:css format:dist:js fix:code-blocks",
@@ -50,7 +53,9 @@
     "@astrojs/react": "^4.4.0",
     "@astrojs/rss": "^4.0.12",
     "@astrojs/sitemap": "^3.6.0",
+    "@notionhq/client": "^2.2.15",
     "astro": "^5.14.8",
+    "notion-to-md": "^3.1.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
@@ -62,6 +67,7 @@
     "esbuild": "^0.24.0",
     "js-beautify": "^1.15.4",
     "npm-run-all": "^4.1.5",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "tsx": "^4.7.0"
   }
 }
