@@ -43,6 +43,12 @@ export interface SiteSeoConfig {
   googleAnalytics: string;
 }
 
+export interface SiteKakaoMapConfig {
+  apiKey: string;
+  defaultCenter?: { lat: number; lng: number };
+  defaultLevel?: number;
+}
+
 export interface SiteProjectLink {
   id: string;
   url: string;
@@ -72,6 +78,7 @@ export interface SiteConfig {
   navigation: SiteNavigationItemConfig[];
   features: SiteFeatureToggles;
   seo: SiteSeoConfig;
+  kakaoMap?: SiteKakaoMapConfig;
   defaultLanguage: LocaleCode;
   languages: LocaleCode[];
   dateFormats: LocaleRecord<{

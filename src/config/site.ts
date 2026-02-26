@@ -162,6 +162,13 @@ const siteConfig: SiteConfig = {
     googleAnalytics: '',
   },
 
+  // Kakao Map API (JavaScript 키 사용 권장 - 지도 표시용)
+  kakaoMap: {
+    apiKey: '3be06657f9c1f93cffb6233338bba836',
+    defaultCenter: { lat: 37.5665, lng: 126.978 },
+    defaultLevel: 3,
+  },
+
   // Language settings
   defaultLanguage: DEFAULT_LOCALE,
   languages: [...SUPPORTED_LOCALES],
