@@ -1,6 +1,7 @@
 ---
 import Layout from './Layout.astro';
 import CategoriesList from '@components/CategoriesList.astro';
+import KakaoMap from '@components/KakaoMap.astro';
 import ProfileCard from '@components/layout/ProfileCard.astro';
 import ContactLinks from '@components/layout/ContactLinks.astro';
 import FooterCopy from '@components/layout/FooterCopy.astro';
@@ -276,7 +277,9 @@ if (defaultAlternate) {
     </aside>
 
     <div class="content-center">
-     <form class="search form hidden" onsubmit="event.preventDefault();">
+      <KakaoMap />
+
+      <form class="search form hidden" onsubmit="event.preventDefault();">
         <div class="search__top">
           <span class="search__top-icon">🔎</span> {t('ui.search')}
         </div>

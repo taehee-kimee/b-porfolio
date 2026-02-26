@@ -1,0 +1,86 @@
+---
+import siteConfig from '@config/site';
+
+interface KakaoMapProps {
+  apiKey?: string;
+  lat?: number;
+  lng?: number;
+  level?: number;
+  width?: string;
+  height?: string;
+}
+
+const kakaoConfig = siteConfig.kakaoMap;
+const {
+  apiKey = kakaoConfig?.apiKey ?? '',
+  lat = kakaoConfig?.defaultCenter?.lat ?? 37.5665,
+  lng = kakaoConfig?.defaultCenter?.lng ?? 126.978,
+  level = kakaoConfig?.defaultLevel ?? 3,
+  width = '100%',
+  height = '280px',
+}: KakaoMapProps = Astro.props;
+---
+{apiKey && (
+  <section class="kakao-map" aria-label="지도">
+    <div
+      id="kakao-map-container"
+      class="kakao-map__container"
+      style={`width: ${width}; height: ${height};`}
+    ></div>
+    <script define:vars={{ apiKey, lat, lng, level }}>
+      (function () {
+        if (!apiKey) return;
+
+        const loadKakaoMap = () => {
+          if (typeof window === 'undefined') return;
+          if (window.kakao?.maps) {
+            initMap();
+            return;
+          }
+
+          const script = document.createElement('script');
+          script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false`;
+          script.async = true;
+          script.onload = () => {
+            window.kakao.maps.load(() => initMap());
+          };
+          document.head.appendChild(script);
+        };
+
+        const initMap = () => {
+          const container = document.getElementById('kakao-map-container');
+          if (!container || !window.kakao?.maps) return;
+
+          const options = {
+            center: new window.kakao.maps.LatLng(lat, lng),
+            level: level,
+          };
+          const map = new window.kakao.maps.Map(container, options);
+
+          const markerPosition = new window.kakao.maps.LatLng(lat, lng);
+          const marker = new window.kakao.maps.Marker({ position: markerPosition });
+          marker.setMap(map);
+        };
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', loadKakaoMap);
+        } else {
+          loadKakaoMap();
+        }
+      })();
+    </script>
+  </section>
+)}
+<style>
+  .kakao-map {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius-md, 0.5rem);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .kakao-map__container {
+    min-height: 200px;
+  }
+</style>

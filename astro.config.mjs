@@ -34,6 +34,8 @@ export default defineConfig({
         'medium-zoom-overlay',
         'medium-zoom-overlay--visible',
         /^hljs-/,
+        'kakao-map',
+        'kakao-map__container',
       ],
     }),
     sitemap({
